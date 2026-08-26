@@ -198,13 +198,15 @@ a:hover { color: #5C3D16; }
 .on-dark p { color: rgba(247, 242, 234, 0.72); }
 
 /* space gallery */
-.space-scroll { display: flex; gap: 10px; overflow-x: auto; scroll-snap-type: x proximity; padding-bottom: 6px; scrollbar-width: none; }
-.space-scroll::-webkit-scrollbar { display: none; }
-.space-scroll img { flex: 0 0 72%; height: 320px; object-fit: cover; scroll-snap-align: start; }
-@media (min-width: 900px) {
-  .space-scroll { display: grid; grid-template-columns: repeat(3, 1fr); gap: 22px; overflow: visible; }
-  .space-scroll img { height: 380px; width: 100%; flex: none; }
-}
+/* 동선의 결 — 풀블리드 무한 드리프트 스트립 (세트 2벌, JS가 절반 폭에서 순환) */
+.drift { overflow-x: auto; scrollbar-width: none; cursor: grab; }
+.drift::-webkit-scrollbar { display: none; }
+.drift.dragging { cursor: grabbing; }
+.drift-track { display: flex; gap: 12px; width: max-content; }
+.drift figure { margin: 0; flex: 0 0 auto; display: flex; flex-direction: column; gap: 10px; }
+.drift img { height: 280px; width: auto; display: block; user-select: none; -webkit-user-drag: none; pointer-events: none; }
+.drift figcaption { font-size: 11px; letter-spacing: 0.24em; color: rgba(247, 242, 234, 0.5); }
+@media (min-width: 900px) { .drift img { height: 400px; } .drift-track { gap: 16px; } }
 .space-head { display: flex; flex-direction: column; gap: 18px; margin-bottom: 30px; }
 @media (min-width: 900px) { .space-head { flex-direction: row; align-items: flex-end; justify-content: space-between; } .space-head p { max-width: 380px; } }
 

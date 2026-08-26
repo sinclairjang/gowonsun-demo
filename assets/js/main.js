@@ -19,6 +19,60 @@
     menu.addEventListener('click', function (e) { if (e.target.tagName === 'A') menu.classList.remove('open'); });
   }
 
+  /* ---- drift: 동선의 결 (무한 루프 갤러리) ---- */
+  document.querySelectorAll('[data-drift]').forEach(function (drift) {
+    var track = drift.querySelector('.drift-track');
+    var half = 0, pos = null, paused = false, inView = false;
+    var dragging = false, dragX = 0, dragStart = 0;
+    function measure() { half = track.scrollWidth / 2; }
+    if (document.readyState === 'complete') measure();
+    else window.addEventListener('load', measure);
+    window.addEventListener('resize', measure);
+    if ('ResizeObserver' in window) new ResizeObserver(measure).observe(track);
+    // 순환: 세트 2벌이 픽셀 단위로 동일하므로 절반 폭 점프는 보이지 않는다
+    drift.addEventListener('scroll', function () {
+      if (!half || dragging) return;
+      if (drift.scrollLeft >= half) { drift.scrollLeft -= half; pos = drift.scrollLeft; }
+      else if (drift.scrollLeft <= 0 && pos !== null) { drift.scrollLeft += half; pos = drift.scrollLeft; }
+    }, { passive: true });
+    // 데스크톱 드래그
+    drift.addEventListener('pointerdown', function (e) {
+      if (e.pointerType !== 'mouse') return;
+      dragging = true; dragX = e.clientX; dragStart = drift.scrollLeft;
+      drift.classList.add('dragging');
+    });
+    window.addEventListener('pointermove', function (e) {
+      if (!dragging) return;
+      var t = dragStart - (e.clientX - dragX);
+      if (half) { while (t >= half) { t -= half; dragStart -= half; } while (t < 0) { t += half; dragStart += half; } }
+      drift.scrollLeft = t;
+    });
+    window.addEventListener('pointerup', function () {
+      if (dragging) { dragging = false; drift.classList.remove('dragging'); }
+    });
+    // 자동 드리프트: 보일 때만, 호버/터치 중에는 멈춤
+    if (!reduced) {
+      drift.addEventListener('mouseenter', function () { paused = true; });
+      drift.addEventListener('mouseleave', function () { paused = false; });
+      drift.addEventListener('touchstart', function () { paused = true; }, { passive: true });
+      drift.addEventListener('touchend', function () { setTimeout(function () { paused = false; }, 2600); });
+      if ('IntersectionObserver' in window) {
+        new IntersectionObserver(function (en) { inView = en[0].isIntersecting; }).observe(drift);
+      } else inView = true;
+      var prevT = null;
+      (function step(t) {
+        var dt = prevT === null ? 0 : Math.min(t - prevT, 100);
+        prevT = t;
+        if (half && inView && !paused && !dragging) {
+          if (pos === null || Math.abs(drift.scrollLeft - pos) > 2) pos = drift.scrollLeft;
+          pos += 0.030 * dt; if (pos >= half) pos -= half;
+          drift.scrollLeft = pos;
+        } else if (paused || dragging) pos = drift.scrollLeft;
+        requestAnimationFrame(step);
+      })(null);
+    }
+  });
+
   /* ---- carousels (두피 카드 등) ---- */
   document.querySelectorAll('[data-carousel]').forEach(function (root) {
     var track = root.querySelector('.carousel');
