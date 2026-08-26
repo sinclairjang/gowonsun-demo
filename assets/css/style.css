@@ -88,10 +88,26 @@ a:hover { color: #5C3D16; }
 }
 
 /* ============ thread (선을 따라) ============ */
+/* CSS scroll-driven: dashoffset을 scroll(root) 타임라인으로 구동 — 스크롤 끝 = 완주를 브라우저가 보장.
+   svg 높이는 body(문서 전체)의 100% — JS 사이징 불필요, 로드 후 scrollHeight 변동에도 안전.
+   6530 = path의 user-space 전체 길이(getTotalLength=6526.6)+여유. viewBox 고정이라 상수.
+   주의: non-scaling-stroke일 때 Chrome은 pathLength가 없으면 dash를 screen-space로 계산해
+   끝부분이 잘린다(원래 버그의 원인). path에 pathLength="1"이 있어야 user-space로 계산됨 —
+   svg 마크업의 pathLength="1"과 이 6530 상수는 한 세트로만 동작한다. */
 #thread { display: none; }
 @media (min-width: 1200px) and (prefers-reduced-motion: no-preference) {
-  #thread { display: block; position: absolute; top: 0; left: 0; width: 100%; z-index: 5; pointer-events: none; }
-  #thread path { stroke: var(--amber); stroke-width: 2; fill: none; stroke-linecap: round; opacity: 0.5; vector-effect: non-scaling-stroke; }
+  body { position: relative; }
+  #thread { display: block; position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: 5; pointer-events: none; }
+  #thread path { stroke: var(--amber); stroke-width: 2; fill: none; stroke-linecap: round; opacity: 0.3; vector-effect: non-scaling-stroke; }
+  @supports (animation-timeline: scroll()) {
+    #thread path {
+      opacity: 0.5;
+      stroke-dasharray: 6530; stroke-dashoffset: 6530;
+      animation: thread-draw linear both;
+      animation-timeline: scroll(root);
+    }
+    @keyframes thread-draw { to { stroke-dashoffset: 0; } }
+  }
 }
 .mthread { position: absolute; left: 14px; width: 1px; background: var(--amber); opacity: 0.25; z-index: 5; pointer-events: none; }
 @media (min-width: 1200px) { .mthread { display: none; } }
