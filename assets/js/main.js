@@ -23,20 +23,38 @@
   var threadSvg = document.getElementById('thread');
   if (threadSvg && !reduced && window.matchMedia('(min-width: 1200px)').matches) {
     var path = threadSvg.querySelector('path');
-    var len = 0;
+    var len = 0, LUT = [];
     function sizeThread() {
       var h = document.documentElement.scrollHeight;
       threadSvg.setAttribute('height', h);
       threadSvg.style.height = h + 'px';
       len = path.getTotalLength();
       path.style.strokeDasharray = len;
+      // 경로를 300구간 샘플링해 viewBox y → 경로 길이 LUT 구성 (단조 증가 보정)
+      LUT = [];
+      var N = 300, prevY = -Infinity;
+      for (var i = 0; i <= N; i++) {
+        var pt = path.getPointAtLength(len * i / N);
+        prevY = Math.max(prevY, pt.y);
+        LUT.push({ l: len * i / N, y: prevY });
+      }
       drawThread();
+    }
+    function lengthAtY(yView) {
+      if (!LUT.length) return 0;
+      if (yView >= LUT[LUT.length - 1].y) return len;
+      var lo = 0, hi = LUT.length - 1;
+      while (lo < hi) { var mid = (lo + hi) >> 1; if (LUT[mid].y < yView) lo = mid + 1; else hi = mid; }
+      return LUT[lo].l;
     }
     function drawThread() {
       var doc = document.documentElement;
-      var progress = (window.scrollY + window.innerHeight * 0.85) / doc.scrollHeight;
-      progress = Math.max(0, Math.min(1, progress));
-      path.style.strokeDashoffset = len * (1 - progress);
+      var maxScroll = doc.scrollHeight - window.innerHeight;
+      // 선의 끝이 뷰포트 92% 지점을 따라오고, 페이지 끝에서는 완전히 그려짐
+      var yDoc = window.scrollY + window.innerHeight * 0.92;
+      if (maxScroll - window.scrollY < 4) yDoc = doc.scrollHeight;
+      var yView = yDoc / doc.scrollHeight * 1000;
+      path.style.strokeDashoffset = Math.max(0, len - lengthAtY(yView));
     }
     var ticking = false;
     window.addEventListener('scroll', function () {
