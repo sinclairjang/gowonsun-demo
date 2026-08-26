@@ -409,3 +409,23 @@ a:hover { color: #5C3D16; }
   .section-title { font-size: 36px; }
   .eyebrow { font-size: 13px; letter-spacing: 0.4em; }
 }
+
+/* ============ tel dialog (데스크톱에서 tel: 대신 번호 안내) ============ */
+.tel-dialog {
+  border: 1px solid var(--line); border-radius: 2px; background: var(--card); color: var(--ink);
+  padding: 38px 40px; text-align: center; max-width: 380px; width: calc(100vw - 40px);
+}
+.tel-dialog::backdrop { background: rgba(36, 26, 16, 0.45); backdrop-filter: blur(2px); }
+.tel-dialog .num { font-family: var(--serif); font-size: 30px; color: var(--deep); margin: 14px 0 6px; }
+.tel-dialog .hrs { font-size: 12.5px; color: var(--muted); }
+.tel-dialog p { font-size: 13px; line-height: 1.9; color: var(--body); margin: 16px 0 24px; white-space: pre-line; word-break: keep-all; }
+.tel-dialog .row { display: flex; gap: 10px; justify-content: center; }
+.tel-dialog button { font: inherit; font-size: 13.5px; cursor: pointer; padding: 11px 22px; border-radius: 2px; letter-spacing: 0.04em; }
+#telCopy { background: var(--ink); color: var(--bg); border: 1px solid var(--ink); }
+#telCopy:hover { background: var(--darker); }
+#telClose { background: transparent; border: 1px solid var(--line); color: var(--body); }
+#telClose:hover { border-color: var(--amber); color: var(--deep); }
+@media (prefers-reduced-motion: no-preference) {
+  @keyframes dialog-rise { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: none; } }
+  .tel-dialog[open] { animation: dialog-rise 0.3s cubic-bezier(0.2, 0.6, 0.2, 1) both; }
+}

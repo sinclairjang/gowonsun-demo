@@ -114,6 +114,23 @@
     document.querySelectorAll('.category[id]').forEach(function (s) { io.observe(s); });
   }
 
+  /* ---- tel dialog: 데스크톱(호버+정밀 포인터)에서는 tel: 대신 번호 안내 ---- */
+  var telDialog = document.getElementById('telDialog');
+  if (telDialog && typeof telDialog.showModal === 'function' &&
+      window.matchMedia('(hover: hover) and (pointer: fine)').matches) {
+    document.querySelectorAll('a[href^="tel:"]').forEach(function (a) {
+      a.addEventListener('click', function (e) { e.preventDefault(); telDialog.showModal(); });
+    });
+    telDialog.addEventListener('click', function (e) { if (e.target === telDialog) telDialog.close(); });
+    document.getElementById('telClose').addEventListener('click', function () { telDialog.close(); });
+    var telCopy = document.getElementById('telCopy');
+    telCopy.addEventListener('click', function () {
+      function done() { telCopy.textContent = '복사되었습니다'; setTimeout(function () { telCopy.textContent = '번호 복사'; }, 1800); }
+      if (navigator.clipboard && navigator.clipboard.writeText) navigator.clipboard.writeText('010-4267-6200').then(done, done);
+      else done();
+    });
+  }
+
   /* ---- back to top ---- */
   var toTop = document.getElementById('toTop');
   if (toTop) {
