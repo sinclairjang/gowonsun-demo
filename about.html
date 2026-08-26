@@ -13,7 +13,7 @@
 <link rel="icon" href="assets/img/logo.png">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Serif+KR:wght@400;500;600&family=Noto+Sans+KR:wght@300;400;500&family=Cormorant+Garamond:wght@500;600&display=swap">
-<link rel="stylesheet" href="assets/css/style.css?v=91caa5f4">
+<link rel="stylesheet" href="assets/css/style.css?v=ee330aa6">
 </head>
 <body data-page="about">
 <header class="site-header solid">
@@ -41,12 +41,19 @@
     </button>
   </div>
   <nav aria-label="모바일 메뉴">
-    <a href="index.html">홈</a>
-    <a href="programs.html">프로그램</a>
-    <a href="about.html">고운:선 이야기</a>
-    <a href="visit.html">오시는 길</a>
+    <a href="index.html" style="--d: 0">홈</a>
+    <span class="tick" aria-hidden="true" style="--d: 1"></span>
+    <a href="programs.html" style="--d: 1">프로그램</a>
+    <span class="tick" aria-hidden="true" style="--d: 2"></span>
+    <a href="about.html" aria-current="page" style="--d: 2">고운:선 이야기</a>
+    <span class="tick" aria-hidden="true" style="--d: 3"></span>
+    <a href="visit.html" style="--d: 3">오시는 길</a>
   </nav>
-  <a class="call" href="tel:010-4267-6200">전화 예약</a>
+  <div class="mfoot">
+    <img src="assets/img/philosophy-hands.png?v=a24ac7ae" alt="" aria-hidden="true">
+    <div class="hours">월–금 10:30–21:30 · 토 10:30–15:00 · 일 휴무</div>
+    <a class="call" href="tel:010-4267-6200">전화 예약</a>
+  </div>
 </div>
 <main>
 <div class="page-head container">
