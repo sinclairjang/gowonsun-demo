@@ -87,30 +87,30 @@ a:hover { color: #5C3D16; }
   .breath { animation: breath 4.8s ease-in-out infinite; }
 }
 
-/* ============ thread (선을 따라) ============ */
-/* CSS scroll-driven: dashoffset을 scroll(root) 타임라인으로 구동 — 스크롤 끝 = 완주를 브라우저가 보장.
-   svg 높이는 body(문서 전체)의 100% — JS 사이징 불필요, 로드 후 scrollHeight 변동에도 안전.
-   6530 = path의 user-space 전체 길이(getTotalLength=6526.6)+여유. viewBox 고정이라 상수.
-   주의: non-scaling-stroke일 때 Chrome은 pathLength가 없으면 dash를 screen-space로 계산해
-   끝부분이 잘린다(원래 버그의 원인). path에 pathLength="1"이 있어야 user-space로 계산됨 —
-   svg 마크업의 pathLength="1"과 이 6530 상수는 한 세트로만 동작한다. */
-#thread { display: none; }
-@media (min-width: 1200px) and (prefers-reduced-motion: no-preference) {
-  body { position: relative; }
-  #thread { display: block; position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: 5; pointer-events: none; }
-  #thread path { stroke: var(--amber); stroke-width: 2; fill: none; stroke-linecap: round; opacity: 0.3; vector-effect: non-scaling-stroke; }
-  @supports (animation-timeline: scroll()) {
-    #thread path {
-      opacity: 0.5;
-      stroke-dasharray: 6530; stroke-dashoffset: 6530;
-      animation: thread-draw linear both;
-      animation-timeline: scroll(root);
+/* ============ reveal (진심의 문장 — 스크롤 초점) ============ */
+/* 문장이 100svh로 고정(sticky)된 동안, 단어가 하나씩 블러에서 또렷해진다.
+   구동은 .reveal의 named view timeline — contain 구간이 정확히 고정 구간과 일치.
+   단어별 구간은 빌더가 인라인 animation-range로 출력. JS 없음.
+   미지원/모션 최소화 환경에서는 일반 섹션 + 또렷한 문장으로 폴백. */
+.reveal .pin { display: flex; align-items: center; justify-content: center; padding: 110px 20px; }
+.reveal .line {
+  font-family: var(--serif); font-weight: 500; font-size: clamp(27px, 4.6vw, 54px);
+  line-height: 1.75; color: var(--ink); text-align: center; max-width: 940px; margin: 0;
+  text-wrap: balance;
+}
+.reveal .w { display: inline-block; }
+@supports (animation-timeline: view()) {
+  @media (prefers-reduced-motion: no-preference) {
+    .reveal { height: 240vh; view-timeline: --rv block; }
+    .reveal .pin { position: sticky; top: 0; height: 100svh; padding: 0 20px; }
+    .reveal .w {
+      opacity: 0.1; filter: blur(9px);
+      animation: w-focus linear both;
+      animation-timeline: --rv;
     }
-    @keyframes thread-draw { to { stroke-dashoffset: 0; } }
+    @keyframes w-focus { to { opacity: 1; filter: blur(0); } }
   }
 }
-.mthread { position: absolute; left: 14px; width: 1px; background: var(--amber); opacity: 0.25; z-index: 5; pointer-events: none; }
-@media (min-width: 1200px) { .mthread { display: none; } }
 
 /* ============ hero ============ */
 .hero { position: relative; min-height: 88svh; display: flex; flex-direction: column; justify-content: flex-end; overflow: hidden; }
@@ -153,7 +153,6 @@ a:hover { color: #5C3D16; }
 .story .headline { font-family: var(--serif); font-size: clamp(21px, 3vw, 30px); line-height: 1.65; font-weight: 500; white-space: pre-line; margin: 0; }
 .story .divider { width: 1px; height: 44px; background: var(--amber); }
 .story .body { max-width: 620px; font-weight: 300; font-size: clamp(14px, 1.5vw, 17px); line-height: 2.05; color: var(--body); white-space: pre-line; }
-.story .sign { font-family: var(--serif); font-size: 16px; color: var(--deep); }
 
 /* ============ cards ============ */
 .sig-grid { display: grid; grid-template-columns: 1fr; gap: 20px; }
