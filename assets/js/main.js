@@ -73,7 +73,9 @@
         var held = hovering || dragging || (t !== null && t < holdUntil);
         if (half && inView && !held) {
           if (pos === null || Math.abs(drift.scrollLeft - pos) > 2) pos = drift.scrollLeft;
-          pos += 0.030 * dt; if (pos >= half) pos -= half;
+          // 랩 후 최소 2px 확보 — 모바일이 scrollLeft를 0으로 내림반올림하면
+          // 아래 역방향 랩(<= 0)과 핑퐁하며 영구 정지하므로 0 근처에 착지 금지
+          pos += 0.030 * dt; if (pos >= half) pos = Math.max(pos - half, 2);
           drift.scrollLeft = pos;
         } else if (held) pos = drift.scrollLeft;
         requestAnimationFrame(step);
