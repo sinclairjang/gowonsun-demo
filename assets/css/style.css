@@ -132,7 +132,9 @@ a:hover { color: #5C3D16; }
   @keyframes kenburns { from { transform: scale(1); } to { transform: scale(1.07); } }
   .hero img.bg { animation: kenburns 26s ease-in-out infinite alternate; }
 }
-.hero .shade { position: absolute; inset: 0; background: linear-gradient(180deg, rgba(30,20,10,0.55) 0%, rgba(30,20,10,0.18) 40%, rgba(30,20,10,0.66) 100%); }
+.hero .shade { position: absolute; inset: 0; background:
+  linear-gradient(90deg, rgba(30,20,10,0.42) 0%, rgba(30,20,10,0) 52%),
+  linear-gradient(180deg, rgba(30,20,10,0.55) 0%, rgba(30,20,10,0.18) 40%, rgba(30,20,10,0.66) 100%); }
 .hero .copy { position: relative; padding: 0 20px 44px 20px; display: flex; flex-direction: column; gap: 14px; }
 .hero .eyebrow { color: #D8BE93; letter-spacing: 0.3em; }
 .hero h1 { font-family: var(--serif); font-size: clamp(27px, 5.6vw, 52px); line-height: 1.48; font-weight: 500; color: #FCF9F4; margin: 0; white-space: pre-line; }
@@ -140,7 +142,8 @@ a:hover { color: #5C3D16; }
 .hero .actions { display: flex; flex-direction: column; gap: 10px; margin-top: 10px; }
 .hero .vertical-caption { display: none; }
 @media (min-width: 900px) {
-  .hero .copy { padding: 0 40px 80px 40px; gap: 22px; }
+  /* 카피를 뷰포트 좌측(로고와 같은 축)에 고정 — 사진의 어두운 문틀 영역이 텍스트 존 */
+  .hero .copy { max-width: none; margin: 0; padding: 0 40px 88px 40px; gap: 22px; }
   .hero .actions { flex-direction: row; gap: 16px; }
   .hero .vertical-caption {
     display: block; position: absolute; right: 48px; top: 50%; transform: translateY(-50%);
