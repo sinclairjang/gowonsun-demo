@@ -47,15 +47,22 @@
       if (half) { while (t >= half) { t -= half; dragStart -= half; } while (t < 0) { t += half; dragStart += half; } }
       drift.scrollLeft = t;
     });
-    window.addEventListener('pointerup', function () {
-      if (dragging) { dragging = false; drift.classList.remove('dragging'); }
+    ['pointerup', 'pointercancel'].forEach(function (ev) {
+      window.addEventListener(ev, function () {
+        if (dragging) { dragging = false; drift.classList.remove('dragging'); }
+      });
     });
-    // 자동 드리프트: 보일 때만, 호버/터치 중에는 멈춤
+    // 자동 드리프트: 보일 때만. 정지는 "만료되는 홀드"로만 — 터치가 스크롤로 바뀌며
+    // touchend 없이 touchcancel로 끝나도(모바일에서 흔함) 홀드가 스스로 풀리므로
+    // 영구히 멈추는 상태가 없다. 마우스 호버만 지속형 정지.
     if (!reduced) {
-      drift.addEventListener('mouseenter', function () { paused = true; });
-      drift.addEventListener('mouseleave', function () { paused = false; });
-      drift.addEventListener('touchstart', function () { paused = true; }, { passive: true });
-      drift.addEventListener('touchend', function () { setTimeout(function () { paused = false; }, 2600); });
+      var hovering = false, holdUntil = 0;
+      function hold() { holdUntil = performance.now() + 2600; }
+      drift.addEventListener('pointerenter', function (e) { if (e.pointerType === 'mouse') hovering = true; });
+      drift.addEventListener('pointerleave', function (e) { if (e.pointerType === 'mouse') hovering = false; });
+      ['touchstart', 'touchmove', 'pointerdown', 'wheel'].forEach(function (ev) {
+        drift.addEventListener(ev, hold, { passive: true });
+      });
       if ('IntersectionObserver' in window) {
         new IntersectionObserver(function (en) { inView = en[0].isIntersecting; }).observe(drift);
       } else inView = true;
@@ -63,11 +70,12 @@
       (function step(t) {
         var dt = prevT === null ? 0 : Math.min(t - prevT, 100);
         prevT = t;
-        if (half && inView && !paused && !dragging) {
+        var held = hovering || dragging || (t !== null && t < holdUntil);
+        if (half && inView && !held) {
           if (pos === null || Math.abs(drift.scrollLeft - pos) > 2) pos = drift.scrollLeft;
           pos += 0.030 * dt; if (pos >= half) pos -= half;
           drift.scrollLeft = pos;
-        } else if (paused || dragging) pos = drift.scrollLeft;
+        } else if (held) pos = drift.scrollLeft;
         requestAnimationFrame(step);
       })(null);
     }
