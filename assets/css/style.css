@@ -365,6 +365,8 @@ a:hover { color: #5C3D16; }
 .director .photo-slot { height: 380px; background: #EFE6D7; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 14px; color: var(--muted); font-size: 13px; }
 @media (min-width: 900px) { .director .photo-slot { height: 520px; } }
 .director .photo-slot .ring { width: 100px; height: 100px; border-radius: 999px; background: #E0D2BC; display: flex; align-items: center; justify-content: center; }
+.director img.photo { width: 100%; height: 380px; object-fit: cover; display: block; }
+@media (min-width: 900px) { .director img.photo { height: 520px; } }
 .director h2 { font-family: var(--serif); font-size: clamp(22px, 2.6vw, 32px); line-height: 1.55; font-weight: 500; margin: 0; white-space: pre-line; }
 .creds { border-top: 1px solid var(--line); padding-top: 20px; display: flex; flex-direction: column; gap: 9px; }
 .creds .c { display: flex; gap: 12px; align-items: center; font-size: 13.5px; color: var(--body); }
