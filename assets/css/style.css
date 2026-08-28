@@ -291,7 +291,6 @@ a:hover { color: #5C3D16; }
 .site-footer .links a:hover { color: #F7F2EA; }
 .site-footer .links .sns-ic { width: 38px; height: 38px; border-color: rgba(247, 242, 234, 0.28); color: rgba(247, 242, 234, 0.65); }
 .site-footer .links a.sns-ic:hover { background: rgba(247, 242, 234, 0.1); border-color: rgba(247, 242, 234, 0.6); color: #F7F2EA; }
-.site-footer .links a:not(.sns-ic) { margin-right: 8px; }
 
 /* ============ programs page ============ */
 .page-head { padding: 120px 0 36px 0; text-align: center; display: flex; flex-direction: column; align-items: center; gap: 12px; }
