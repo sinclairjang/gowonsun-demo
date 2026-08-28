@@ -136,7 +136,8 @@
     var telCopy = document.getElementById('telCopy');
     telCopy.addEventListener('click', function () {
       function done() { telCopy.textContent = '복사되었습니다'; setTimeout(function () { telCopy.textContent = '번호 복사'; }, 1800); }
-      if (navigator.clipboard && navigator.clipboard.writeText) navigator.clipboard.writeText('010-4267-6200').then(done, done);
+      var num = document.getElementById('telDialogNum').textContent.trim();
+      if (navigator.clipboard && navigator.clipboard.writeText) navigator.clipboard.writeText(num).then(done, done);
       else done();
     });
   }
